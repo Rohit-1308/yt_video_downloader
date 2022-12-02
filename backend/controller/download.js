@@ -18,6 +18,7 @@ exports.getinfo=async(req,res)=>{
   const {link,resType}=req.body
   console.log({link});
   try {
+
     const info= await ytdl.getInfo(link)
     console.log({info});
     const title= info.videoDetails.title
@@ -30,7 +31,7 @@ exports.getinfo=async(req,res)=>{
   // res.json({"name":"rohit k"})
 }
 
-exports.downloadaudio=async(req,res)=>{
+exports.downloadAudio=async(req,res)=>{
   const {link,resType}=req.body
  
   console.log({link});
@@ -105,19 +106,15 @@ ffmpegProcess.on('close', () => {
   process.stdout.write('\n\n\n');
   clearInterval(progressbar);
   console.log('done');
+  res.status(200).send("Downloading completed")
 });
 
 // Link streams
 // FFmpeg creates the transformer streams and we just have to insert / read data
 audio.pipe(ffmpegProcess.stdio[3]);
 video.pipe(ffmpegProcess.stdio[4]);
-await  ffmpegProcess.stdio[5].pipe(fs.createWriteStream(`D:/Downloads/${title}.mkv`));
+ffmpegProcess.stdio[5].pipe(fs.createWriteStream(`D:/Downloads/${title}.mkv`));
 
-while(true){
-  if(tracker.audio.downloaded == 100 && tracker.video.downloaded ==100){
-    res.send("Downloading completed")
-  }
-}
 }
 
 
